@@ -277,6 +277,14 @@ type LokiComponentSpec struct {
 	// +kubebuilder:validation:Optional
 	// +operator-sdk:csv:customresourcedefinitions:type=spec,xDescriptors="urn:alm:descriptor:com.tectonic.ui:podAntiAffinity",displayName="PodAntiAffinity"
 	PodAntiAffinity *corev1.PodAntiAffinity `json:"podAntiAffinity,omitempty"`
+
+	// ResourceRequirements defines the compute resource requirements
+	// of a component.
+	//
+	// +optional
+	// +kubebuilder:validation:Optional
+	// +operator-sdk:csv:customresourcedefinitions:type=spec,xDescriptors="urn:alm:descriptor:com.tectonic.ui:resourceRequirements",displayName="ResourceRequirements"
+	ResourceRequirements *corev1.ResourceRequirements `json:"resourceRequirements,omitempty"`
 }
 
 // LokiTemplateSpec defines the template of all requirements to configure

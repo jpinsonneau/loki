@@ -150,7 +150,7 @@ metadata:
     categories: OpenShift Optional, Logging & Tracing
     certified: "false"
     containerImage: docker.io/grafana/loki-operator:main-ac1c1fd
-    createdAt: "2023-06-12T17:36:41Z"
+    createdAt: "2023-06-22T08:55:40Z"
     description: The Community Loki Operator provides Kubernetes native deployment
       and management of Loki and related logging components.
     operators.operatorframework.io/builder: operator-sdk-unknown
@@ -582,6 +582,12 @@ spec:
         path: template.compactor.replicas
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:hidden
+      - description: ResourceRequirements defines the compute resource requirements
+          of a component.
+        displayName: ResourceRequirements
+        path: template.compactor.resourceRequirements
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:resourceRequirements
       - description: Distributor defines the distributor component spec.
         displayName: Distributor pods
         path: template.distributor
@@ -596,6 +602,12 @@ spec:
         path: template.distributor.replicas
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:hidden
+      - description: ResourceRequirements defines the compute resource requirements
+          of a component.
+        displayName: ResourceRequirements
+        path: template.distributor.resourceRequirements
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:resourceRequirements
       - description: Gateway defines the lokistack gateway component spec.
         displayName: Gateway pods
         path: template.gateway
@@ -610,6 +622,12 @@ spec:
         path: template.gateway.replicas
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:hidden
+      - description: ResourceRequirements defines the compute resource requirements
+          of a component.
+        displayName: ResourceRequirements
+        path: template.gateway.resourceRequirements
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:resourceRequirements
       - description: IndexGateway defines the index gateway component spec.
         displayName: Index Gateway pods
         path: template.indexGateway
@@ -624,6 +642,12 @@ spec:
         path: template.indexGateway.replicas
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:hidden
+      - description: ResourceRequirements defines the compute resource requirements
+          of a component.
+        displayName: ResourceRequirements
+        path: template.indexGateway.resourceRequirements
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:resourceRequirements
       - description: Ingester defines the ingester component spec.
         displayName: Ingester pods
         path: template.ingester
@@ -638,6 +662,12 @@ spec:
         path: template.ingester.replicas
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:hidden
+      - description: ResourceRequirements defines the compute resource requirements
+          of a component.
+        displayName: ResourceRequirements
+        path: template.ingester.resourceRequirements
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:resourceRequirements
       - description: Querier defines the querier component spec.
         displayName: Querier pods
         path: template.querier
@@ -652,6 +682,12 @@ spec:
         path: template.querier.replicas
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:hidden
+      - description: ResourceRequirements defines the compute resource requirements
+          of a component.
+        displayName: ResourceRequirements
+        path: template.querier.resourceRequirements
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:resourceRequirements
       - description: QueryFrontend defines the query frontend component spec.
         displayName: Query Frontend pods
         path: template.queryFrontend
@@ -666,6 +702,12 @@ spec:
         path: template.queryFrontend.replicas
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:hidden
+      - description: ResourceRequirements defines the compute resource requirements
+          of a component.
+        displayName: ResourceRequirements
+        path: template.queryFrontend.resourceRequirements
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:resourceRequirements
       - description: Ruler defines the ruler component spec.
         displayName: Ruler pods
         path: template.ruler
@@ -680,6 +722,12 @@ spec:
         path: template.ruler.replicas
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:hidden
+      - description: ResourceRequirements defines the compute resource requirements
+          of a component.
+        displayName: ResourceRequirements
+        path: template.ruler.resourceRequirements
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:resourceRequirements
       - description: Tenants defines the per-tenant authentication and authorization
           spec for the lokistack-gateway component.
         displayName: Tenants Configuration

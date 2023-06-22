@@ -14,7 +14,7 @@ type ComponentResources struct {
 	Compactor    ResourceRequirements
 	Ruler        ResourceRequirements
 	WALStorage   ResourceRequirements
-	// these two don't need a PVCSize
+	// these don't need a PVCSize
 	Querier       corev1.ResourceRequirements
 	Distributor   corev1.ResourceRequirements
 	QueryFrontend corev1.ResourceRequirements

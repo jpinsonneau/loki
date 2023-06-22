@@ -1,8 +1,11 @@
 package manifests
 
 import (
+	"errors"
+
 	lokiv1 "github.com/grafana/loki/operator/apis/loki/v1"
 	"github.com/grafana/loki/operator/internal/manifests/internal"
+	corev1 "k8s.io/api/core/v1"
 
 	"github.com/ViaQ/logerr/v2/kverrors"
 	"github.com/imdario/mergo"
@@ -10,6 +13,8 @@ import (
 	"github.com/openshift/library-go/pkg/crypto"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
+
+var UnsupportedResourceRequirementType = errors.New("unsupported resource requirement type")
 
 // BuildAll builds all manifests required to run a Loki Stack
 func BuildAll(opts Options) ([]client.Object, error) {
@@ -110,6 +115,28 @@ func DefaultLokiStackSpec(size lokiv1.LokiStackSizeType) *lokiv1.LokiStackSpec {
 	return (&defaults).DeepCopy()
 }
 
+func addInternalResourceRequirements(userRequirement *corev1.ResourceRequirements, requirement *internal.ResourceRequirements) {
+	if userRequirement != nil {
+		if len(userRequirement.Limits) > 0 {
+			requirement.Limits = userRequirement.Limits
+		}
+		if len(userRequirement.Requests) > 0 {
+			requirement.Requests = userRequirement.Requests
+		}
+	}
+}
+
+func addCoreV1ResourceRequirements(userRequirement *corev1.ResourceRequirements, requirement *corev1.ResourceRequirements) {
+	if userRequirement != nil {
+		if len(userRequirement.Limits) > 0 {
+			requirement.Limits = userRequirement.Limits
+		}
+		if len(userRequirement.Requests) > 0 {
+			requirement.Requests = userRequirement.Requests
+		}
+	}
+}
+
 // ApplyDefaultSettings manipulates the options to conform to
 // build specifications
 func ApplyDefaultSettings(opts *Options) error {
@@ -133,7 +160,28 @@ func ApplyDefaultSettings(opts *Options) error {
 		return kverrors.Wrap(err, "failed to merge strict defaults")
 	}
 
-	opts.ResourceRequirements = internal.ResourceRequirementsTable[opts.Stack.Size]
+	requirements := internal.ResourceRequirementsTable[opts.Stack.Size]
+	internalResourceRequirements := map[*lokiv1.LokiComponentSpec]*internal.ResourceRequirements{
+		spec.Template.Ruler:        &requirements.Ruler,
+		spec.Template.Ingester:     &requirements.Ingester,
+		spec.Template.Compactor:    &requirements.Compactor,
+		spec.Template.IndexGateway: &requirements.IndexGateway,
+	}
+	for k, v := range internalResourceRequirements {
+		addInternalResourceRequirements(k.ResourceRequirements, v)
+	}
+
+	corev1ResourceRequirements := map[*lokiv1.LokiComponentSpec]*corev1.ResourceRequirements{
+		spec.Template.Querier:       &requirements.Querier,
+		spec.Template.Distributor:   &requirements.Distributor,
+		spec.Template.QueryFrontend: &requirements.QueryFrontend,
+		spec.Template.Gateway:       &requirements.Gateway,
+	}
+	for k, v := range corev1ResourceRequirements {
+		addCoreV1ResourceRequirements(k.ResourceRequirements, v)
+	}
+
+	opts.ResourceRequirements = requirements
 	opts.Stack = *spec
 
 	return nil

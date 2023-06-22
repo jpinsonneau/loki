@@ -8,6 +8,7 @@ import (
 	openshiftconfigv1 "github.com/openshift/api/config/v1"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/resource"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	configv1 "github.com/grafana/loki/operator/apis/config/v1"
@@ -34,6 +35,14 @@ func TestApplyUserOptions_OverrideDefaults(t *testing.T) {
 					Distributor: &lokiv1.LokiComponentSpec{
 						Replicas: 42,
 					},
+					Ingester: &lokiv1.LokiComponentSpec{
+						ResourceRequirements: &corev1.ResourceRequirements{
+							Limits: map[corev1.ResourceName]resource.Quantity{
+								corev1.ResourceCPU:    resource.MustParse("2"),
+								corev1.ResourceMemory: resource.MustParse("16Gi"),
+							},
+						},
+					},
 				},
 			},
 			Timeouts: defaultTimeoutConfig,
@@ -47,12 +56,14 @@ func TestApplyUserOptions_OverrideDefaults(t *testing.T) {
 		require.Equal(t, defs.ReplicationFactor, opt.Stack.ReplicationFactor)
 		require.Equal(t, defs.Replication, opt.Stack.Replication)
 		require.Equal(t, defs.ManagementState, opt.Stack.ManagementState)
-		require.Equal(t, defs.Template.Ingester, opt.Stack.Template.Ingester)
 		require.Equal(t, defs.Template.Querier, opt.Stack.Template.Querier)
 		require.Equal(t, defs.Template.QueryFrontend, opt.Stack.Template.QueryFrontend)
 
 		// Require distributor replicas to be set by user overwrite
 		require.NotEqual(t, defs.Template.Distributor.Replicas, opt.Stack.Template.Distributor.Replicas)
+
+		// Ingester distributor resources to be set by user overwrite
+		require.NotEqual(t, defs.Template.Ingester.ResourceRequirements, opt.Stack.Template.Ingester.ResourceRequirements)
 
 		// Require distributor tolerations and nodeselectors to use defaults
 		require.Equal(t, defs.Template.Distributor.Tolerations, opt.Stack.Template.Distributor.Tolerations)
